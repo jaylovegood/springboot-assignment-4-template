@@ -187,9 +187,10 @@ class DataGenerator(
                 postId = targetPost.id!!,
             )
 
-        val updatedPost = targetPost.apply {
-            likeCount++
-        }
+        val updatedPost =
+            targetPost.apply {
+                likeCount++
+            }
         // DB에 저장
         postRepository.save(updatedPost)
         postLikeRepository.save(postLike)
