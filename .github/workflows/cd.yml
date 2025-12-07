@@ -45,11 +45,11 @@ jobs:
 
       - name: Create/Update app secrets
         run: |
-          kubectl create secret generic app-secrets \
+          kubectl -n seminar create secret generic app-secrets \
             --from-literal=db-password=${{ secrets.DB_PASSWORD }} \
             --from-literal=redis-password=${{ secrets.REDIS_PASSWORD }} \
             --from-literal=jwt-secret=${{ secrets.JWT_SECRET }} \
-            --dry-run=client -o yaml | kubectl apply -f -
+            --dry-run=client -o yaml | kubectl -n seminar apply -f -
 
       - name: Deploy to k3s
         run: |
@@ -60,5 +60,5 @@ jobs:
 
       - name: Verify deployment
         run: |
-          kubectl get pods -l app=springboot-app
-          kubectl get svc springboot-service
+          kubectl -n seminar get pods -l app=springboot-app
+          kubectl -n seminar get svc springboot-service
