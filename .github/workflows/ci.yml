@@ -12,9 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      TESTCONTAINERS_RYUK_DISABLED: true
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
