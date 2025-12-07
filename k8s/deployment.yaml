@@ -20,38 +20,42 @@ spec:
         ports:
         - containerPort: 8080
         env:
-        - name: SPRING_DATASOURCE_URL
-          value: "jdbc:mysql://mysql-service:3306/seminar2025?allowPublicKeyRetrieval=true"
-        - name: SPRING_DATASOURCE_USERNAME
+        - name: DB_HOST
+          value: my-mysql.default.svc.cluster.local
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_NAME
+          value: "appdb"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
-              key: username
-        - name: SPRING_DATASOURCE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-secret
-              key: password
-        - name: SPRING_DATA_REDIS_HOST
-          value: "redis-service"
-        - name: SPRING_DATA_REDIS_PORT
-          value: "6379"
+              name: app-secrets
+              key: db-password
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:
-              name: jwt-secret
-              key: secret
+              name: app-secrets
+              key: jwt-secret
         - name: JWT_EXPIRATION_IN_MS
           value: "86400000"
+        - name: REDIS_HOST
+          value: my-redis-master.default.svc.cluster.local
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: redis-password
         livenessProbe:
-          httpGet:
-            path: /actuator/health
+          tcpSocket:
             port: 8080
           initialDelaySeconds: 60
           periodSeconds: 10
         readinessProbe:
-          httpGet:
-            path: /actuator/health
+          tcpSocket:
             port: 8080
           initialDelaySeconds: 30
           periodSeconds: 5

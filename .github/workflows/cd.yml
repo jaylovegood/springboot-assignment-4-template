@@ -43,6 +43,14 @@ jobs:
           echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
           chmod 600 ~/.kube/config
 
+      - name: Create/Update app secrets
+        run: |
+          kubectl create secret generic app-secrets \
+            --from-literal=db-password=${{ secrets.DB_PASSWORD }} \
+            --from-literal=redis-password=${{ secrets.REDIS_PASSWORD }} \
+            --from-literal=jwt-secret=${{ secrets.JWT_SECRET }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Deploy to k3s
         run: |
           kubectl set image deployment/springboot-app \
