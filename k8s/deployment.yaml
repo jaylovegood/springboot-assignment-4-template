@@ -41,7 +41,7 @@ spec:
         - name: JWT_EXPIRATION_IN_MS
           value: "86400000"
         - name: REDIS_HOST
-          value: my-redis-master.default.svc.cluster.local
+          value: redis
         - name: REDIS_PORT
           value: "6379"
         - name: REDIS_PASSWORD
