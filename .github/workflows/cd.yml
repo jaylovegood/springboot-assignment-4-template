@@ -53,9 +53,9 @@ jobs:
 
       - name: Deploy to k3s
         run: |
+          kubectl apply -f k8s/
           kubectl set image deployment/springboot-app \
-            springboot-app=picokosmos/springboot-seminar:${{ github.sha }} \
-            --record
+            springboot-app=picokosmos/springboot-seminar:${{ github.sha }}
           kubectl rollout status deployment/springboot-app --timeout=5m
 
       - name: Verify deployment
