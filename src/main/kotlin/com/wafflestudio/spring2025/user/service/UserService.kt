@@ -11,6 +11,7 @@ import com.wafflestudio.spring2025.user.repository.UserRepository
 import org.mindrot.jbcrypt.BCrypt
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Service
+import java.util.concurrent.TimeUnit
 
 @Service
 class UserService(
@@ -60,6 +61,18 @@ class UserService(
         user: User,
         token: String,
     ) {
-        TODO()
+        val jti = jwtTokenProvider.getJti(token) ?: return
+
+        val expiration = jwtTokenProvider.getExpiration(token).time
+        val now = System.currentTimeMillis()
+        val ttl = expiration - now
+
+        if (ttl <= 0) {
+            return
+        }
+
+        redisTemplate
+            .opsForValue()
+            .set("blacklist:$jti", "1", ttl, TimeUnit.MILLISECONDS)
     }
 }

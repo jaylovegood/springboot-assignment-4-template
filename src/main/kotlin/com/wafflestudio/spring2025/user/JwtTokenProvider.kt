@@ -6,6 +6,7 @@ import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.util.Date
+import java.util.UUID
 
 @Component
 class JwtTokenProvider(
@@ -20,9 +21,13 @@ class JwtTokenProvider(
         val now = Date()
         val validity = Date(now.time + expirationInMs)
 
+        val jti = UUID.randomUUID().toString()
+
         return Jwts
             .builder()
             .setSubject(username)
+            .setId(jti)
+            .claim("jti", jti)
             .setIssuedAt(now)
             .setExpiration(validity)
             .signWith(key, SignatureAlgorithm.HS256)
@@ -47,8 +52,27 @@ class JwtTokenProvider(
                 .parseClaimsJws(token)
             return true
         } catch (e: Exception) {
-            // do nothing
         }
         return false
     }
+
+    fun getJti(token: String): String? =
+        Jwts
+            .parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .body
+            .let { claims ->
+                claims.id ?: claims["jti"] as? String
+            }
+
+    fun getExpiration(token: String): Date =
+        Jwts
+            .parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .body
+            .expiration
 }
