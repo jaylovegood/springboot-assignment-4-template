@@ -17,7 +17,7 @@ COPY src ./src
 RUN gradle bootJar --no-daemon -x test
 
 # Runtime stage
-FROM openjdk:17-slim
+FROM eclipse-temurin:17-jre
 
 WORKDIR /app
 
