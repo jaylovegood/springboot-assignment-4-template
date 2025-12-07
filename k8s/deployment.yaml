@@ -21,11 +21,11 @@ spec:
         - containerPort: 8080
         env:
         - name: DB_HOST
-          value: my-mysql.default.svc.cluster.local
+          value: mysql.seminar.svc.cluster.local
         - name: DB_PORT
           value: "3306"
         - name: DB_NAME
-          value: "appdb"
+          value: "seminar2025"
         - name: DB_USER
           value: "root"
         - name: DB_PASSWORD
