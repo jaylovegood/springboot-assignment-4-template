@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/users")
-@SecurityRequirement(name = "bearer")
+@SecurityRequirement(name = "bearerAuth")
 @Tag(name = "User", description = "사용자 API")
 class UserController(
     private val userService: UserService,
