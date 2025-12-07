@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-app
+  labels:
+    app: springboot-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: springboot-app
+  template:
+    metadata:
+      labels:
+        app: springboot-app
+    spec:
+      containers:
+      - name: springboot-app
+        image: picokosmos/springboot-seminar:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_HOST
+          value: my-mysql.default.svc.cluster.local
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_NAME
+          value: "appdb"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: db-password
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: jwt-secret
+        - name: JWT_EXPIRATION_IN_MS
+          value: "86400000"
+        - name: REDIS_HOST
+          value: my-redis-master.default.svc.cluster.local
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: redis-password
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
