@@ -12,6 +12,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      TESTCONTAINERS_RYUK_DISABLED: true
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -30,6 +33,3 @@ jobs:
 
       - name: Run tests
         run: ./gradlew test
-
-      - name: Build Docker image
-        run: docker build -t picokosmos/springboot-seminar:${{ github.sha }} .
